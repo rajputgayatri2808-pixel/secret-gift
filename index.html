@@ -6,35 +6,416 @@
   <title>For You ❤️</title>
 
   <style>
+    *{box-sizing:border-box;}
     body{
       margin:0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg,#ffe6ee,#fff);
+      background: radial-gradient(circle at top, #ffe1ea, #ffffff 60%);
       text-align:center;
-      padding:20px;
+      padding:18px;
+      overflow-x:hidden;
     }
+
     .card{
-      max-width:480px;
+      max-width:520px;
       margin:auto;
-      background:white;
+      background:rgba(255,255,255,0.95);
       padding:22px;
-      border-radius:18px;
-      box-shadow:0 10px 30px rgba(0,0,0,0.12);
+      border-radius:22px;
+      box-shadow:0 14px 35px rgba(0,0,0,0.12);
+      position:relative;
+      z-index:5;
+      border:1px solid #ffd3df;
     }
-    h1{color:#ff4d6d;margin-top:0;}
+
+    h1{
+      color:#ff3b6f;
+      margin:0;
+      font-size:38px;
+      letter-spacing:0.5px;
+    }
+
+    .sub{
+      color:#666;
+      margin-top:10px;
+      font-size:15px;
+      line-height:1.4;
+    }
+
+    .emoji{
+      font-size:30px;
+      margin:10px 0 0;
+    }
+
+    h3{
+      margin:22px 0 10px;
+      color:#111;
+      font-size:18px;
+    }
+
     input, textarea{
       width:100%;
-      padding:12px;
-      border-radius:12px;
-      border:1px solid #ddd;
-      margin:10px 0;
-      font-size:15px;
-      box-sizing:border-box;
-    }
-    button{
-      padding:12px 18px;
-      border:none;
+      padding:13px 14px;
       border-radius:14px;
+      border:1px solid #ddd;
+      margin:8px 0;
+      font-size:15px;
+      outline:none;
+      background:#fff;
+    }
+
+    input:focus, textarea:focus{
+      border-color:#ff4d6d;
+      box-shadow:0 0 0 4px rgba(255,77,109,0.12);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .photoBox{
+      border:2px dashed #ffc2d1;
+      border-radius:16px;
+      padding:10px;
+      background:#fff7fa;
+      position:relative;
+      overflow:hidden;
+      min-height:90px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .photoBox input{
+      border:none;
+      box-shadow:none;
+      padding:0;
+      margin:0;
+      width:100%;
+      font-size:13px;
+    }
+
+    .preview{
+      width:100%;
+      height:90px;
+      object-fit:cover;
+      border-radius:12px;
+      display:none;
+    }
+
+    .small{
+      font-size:12px;
+      color:#777;
+    }
+
+    .btnRow{
+      margin-top:18px;
+    }
+
+    button{
+      padding:13px 20px;
+      border:none;
+      border-radius:16px;
+      font-size:16px;
+      cursor:pointer;
+      margin:8px;
+      transition:0.2s;
+    }
+
+    .yes{
+      background:#ff3b6f;
+      color:white;
+      box-shadow:0 10px 20px rgba(255,59,111,0.25);
+    }
+    .yes:active{transform:scale(0.98);}
+
+    .no{
+      background:#f2f2f2;
+      color:#333;
+    }
+
+    .result{
+      display:none;
+      margin-top:18px;
+      padding:16px;
+      border-radius:18px;
+      background:#fff0f6;
+      font-weight:bold;
+      color:#ff2d55;
+      line-height:1.45;
+      border:1px solid #ffc2d1;
+      white-space:pre-line;
+    }
+
+    .videoBox{
+      display:none;
+      margin-top:16px;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid #ffd3df;
+    }
+
+    iframe{
+      width:100%;
+      height:260px;
+      border:0;
+    }
+
+    .footer{
+      margin-top:16px;
+      font-size:13px;
+      color:#777;
+    }
+
+    /* Floating hearts */
+    .heart{
+      position:fixed;
+      bottom:-30px;
+      font-size:18px;
+      animation: floatUp linear forwards;
+      opacity:0.9;
+      z-index:1;
+      pointer-events:none;
+    }
+    @keyframes floatUp{
+      from{transform:translateY(0) translateX(0); opacity:0.9;}
+      to{transform:translateY(-120vh) translateX(40px); opacity:0;}
+    }
+
+    /* Confetti */
+    .confetti{
+      position:fixed;
+      top:-10px;
+      width:10px;
+      height:10px;
+      opacity:0.9;
+      z-index:10;
+      animation: fall 1.8s linear forwards;
+    }
+    @keyframes fall{
+      to{transform:translateY(120vh) rotate(720deg); opacity:0;}
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h1>Valentine Surprise</h1>
+    <div class="emoji">❤️✨💌</div>
+    <p class="sub">Create a secret gift page for your partner.<br>Fill details, then click YES 💖</p>
+
+    <h3>1) Partner’s Name</h3>
+    <input id="name" placeholder="Example: Hrithik ❤️" />
+
+    <h3>2) Success Message (After YES)</h3>
+    <input id="msg" placeholder="Example: Every second with you is a celebration ❤️" />
+
+    <h3>3) Love Letter</h3>
+    <textarea id="letter" rows="4" placeholder="Write your feelings here..."></textarea>
+
+    <h3>4) Upload Photos (Min 1, Max 6)</h3>
+    <div class="grid">
+      <div class="photoBox">
+        <img id="p1" class="preview" />
+        <input type="file" accept="image/*" onchange="previewImg(event,'p1')" />
+        <div class="small">Photo 1</div>
+      </div>
+      <div class="photoBox">
+        <img id="p2" class="preview" />
+        <input type="file" accept="image/*" onchange="previewImg(event,'p2')" />
+        <div class="small">Photo 2</div>
+      </div>
+      <div class="photoBox">
+        <img id="p3" class="preview" />
+        <input type="file" accept="image/*" onchange="previewImg(event,'p3')" />
+        <div class="small">Photo 3</div>
+      </div>
+      <div class="photoBox">
+        <img id="p4" class="preview" />
+        <input type="file" accept="image/*" onchange="previewImg(event,'p4')" />
+        <div class="small">Photo 4</div>
+      </div>
+      <div class="photoBox">
+        <img id="p5" class="preview" />
+        <input type="file" accept="image/*" onchange="previewImg(event,'p5')" />
+        <div class="small">Photo 5</div>
+      </div>
+      <div class="photoBox">
+        <img id="p6" class="preview" />
+        <input type="file" accept="image/*" onchange="previewImg(event,'p6')" />
+        <div class="small">Photo 6</div>
+      </div>
+    </div>
+
+    <h3>5) Surprise Video (Optional)</h3>
+    <input id="video" placeholder="Paste YouTube link (optional)" />
+
+    <h3>6) Question</h3>
+    <p style="font-size:18px;margin:10px 0;">Will you be my Valentine? 💍</p>
+
+    <div class="btnRow">
+      <button class="yes" onclick="showYes()">YES 💖</button>
+      <button class="no" onclick="showNo()">NO 😅</button>
+    </div>
+
+    <div id="result" class="result"></div>
+
+    <div id="videoBox" class="videoBox">
+      <iframe id="yt" allowfullscreen></iframe>
+    </div>
+
+    <div class="footer">Made with ❤️ (Secret Link)</div>
+  </div>
+
+  <script>
+    // Hearts animation
+    function createHeart(){
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerText = ["❤️","💖","💕","💘","💗"][Math.floor(Math.random()*5)];
+      heart.style.left = Math.random()*100 + "vw";
+      heart.style.animationDuration = (4 + Math.random()*3) + "s";
+      heart.style.fontSize = (14 + Math.random()*18) + "px";
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(), 7000);
+    }
+    setInterval(createHeart, 450);
+
+    // Confetti effect
+    function confettiBoom(){
+      for(let i=0;i<45;i++){
+        const c = document.createElement("div");
+        c.className="confetti";
+        c.style.left = Math.random()*100 + "vw";
+        c.style.background = ["#ff3b6f","#ffcc00","#00c2ff","#7c4dff","#00d084"][Math.floor(Math.random()*5)];
+        c.style.width = (6 + Math.random()*10) + "px";
+        c.style.height = (6 + Math.random()*10) + "px";
+        c.style.borderRadius = Math.random()>0.5 ? "50%" : "2px";
+        c.style.animationDuration = (1.3 + Math.random()*1.2) + "s";
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(), 2500);
+      }
+    }
+
+    // Photo preview
+    function previewImg(event, id){
+      const file = event.target.files[0];
+      if(!file) return;
+      const img = document.getElementById(id);
+      img.src = URL.createObjectURL(file);
+      img.style.display = "block";
+    }
+
+    // YouTube link to embed
+    function getEmbed(url){
+      if(!url) return "";
+      try{
+        if(url.includes("youtu.be/")){
+          return "https://www.youtube.com/embed/" + url.split("youtu.be/")[1].split("?")[0];
+        }
+        if(url.includes("watch?v=")){
+          return "https://www.youtube.com/embed/" + url.split("watch?v=")[1].split("&")[0];
+        }
+        if(url.includes("/shorts/")){
+          return "https://www.youtube.com/embed/" + url.split("/shorts/")[1].split("?")[0];
+        }
+      }catch(e){}
+      return "";
+    }
+
+    function showYes(){
+      let name = document.getElementById("name").value || "My Love";
+      let msg = document.getElementById("msg").value || "You made my whole world brighter ❤️";
+      let letter = document.getElementById("letter").value || "I love you so much 💖";
+      let video = document.getElementById("video").value;
+
+      const resultText =
+        "💖 " + name + " 💖\n\n" +
+        msg + "\n\n" +
+        "💌 Love Letter:\n" + letter + "\n\n" +
+        "I love you endlessly ❤️";
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerText = resultText;
+
+      // show video if link is correct
+      const embed = getEmbed(video);
+      if(embed){
+        document.getElementById("videoBox").style.display="block";
+        document.getElementById("yt").src = embed;
+      }else{
+        document.getElementById("videoBox").style.display="none";
+        document.getElementById("yt").src = "";
+      }
+
+      confettiBoom();
+    }
+
+    function showNo(){
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerText =
+        "😅 Oops! Try again...\nBecause my heart only says YES for you ❤️";
+      document.getElementById("videoBox").style.display="none";
+      document.getElementById("yt").src = "";
+    }
+  </script>
+
+</body>
+</html>    h3{
+      margin:22px 0 10px;
+      color:#111;
+      font-size:18px;
+    }
+
+    input, textarea{
+      width:100%;
+      padding:13px 14px;
+      border-radius:14px;
+      border:1px solid #ddd;
+      margin:8px 0;
+      font-size:15px;
+      outline:none;
+      background:#fff;
+    }
+
+    input:focus, textarea:focus{
+      border-color:#ff4d6d;
+      box-shadow:0 0 0 4px rgba(255,77,109,0.12);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:10px;
+      margin-top:10px;
+    }
+
+    .photoBox{
+      border:2px dashed #ffc2d1;
+      border-radius:16px;
+      padding:10px;
+      background:#fff7fa;
+      position:relative;
+      overflow:hidden;
+      min-height:90px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .photoBox input{
+      border:none;
+      box-shadow:none;
+      padding:0;
+      margin:0      border-radius:14px;
       font-size:16px;
       cursor:pointer;
       margin:8px;
