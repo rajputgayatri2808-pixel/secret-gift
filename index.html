@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For You ❤️</title>
+
+  <style>
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg,#ffe6ee,#fff);
+      text-align:center;
+      padding:20px;
+    }
+    .card{
+      max-width:480px;
+      margin:auto;
+      background:white;
+      padding:22px;
+      border-radius:18px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.12);
+    }
+    h1{color:#ff4d6d;margin-top:0;}
+    input, textarea{
+      width:100%;
+      padding:12px;
+      border-radius:12px;
+      border:1px solid #ddd;
+      margin:10px 0;
+      font-size:15px;
+      box-sizing:border-box;
+    }
+    button{
+      padding:12px 18px;
+      border:none;
+      border-radius:14px;
+      font-size:16px;
+      cursor:pointer;
+      margin:8px;
+    }
+    .yes{background:#ff4d6d;color:white;}
+    .no{background:#eee;color:#333;}
+    .result{
+      display:none;
+      margin-top:15px;
+      padding:14px;
+      border-radius:14px;
+      background:#fff0f5;
+      font-weight:bold;
+      color:#ff2d55;
+      line-height:1.4;
+    }
+    .footer{margin-top:15px;font-size:13px;color:#777;}
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Valentine Surprise ❤️</h1>
+    <p style="color:#666;">Create a secret gift page for your partner 💕</p>
+
+    <h3>1) Partner’s Name</h3>
+    <input id="name" placeholder="Enter name (Example: Hrithik)" />
+
+    <h3>2) Success Message (After YES)</h3>
+    <input id="msg" placeholder="Example: Every second with you is a celebration ❤️" />
+
+    <h3>3) Love Letter</h3>
+    <textarea id="letter" rows="4" placeholder="Write your feelings here..."></textarea>
+
+    <h3>4) Question</h3>
+    <p style="font-size:18px;margin:10px 0;">Will you be my Valentine? 💍</p>
+
+    <button class="yes" onclick="showYes()">YES 💖</button>
+    <button class="no" onclick="showNo()">NO 😅</button>
+
+    <div id="result" class="result"></div>
+
+    <div class="footer">
+      Made with ❤️ (Secret Link)
+    </div>
+  </div>
+
+  <script>
+    function showYes(){
+      let name = document.getElementById("name").value || "My Love";
+      let msg = document.getElementById("msg").value || "You made my day ❤️";
+      let letter = document.getElementById("letter").value || "I love you so much 💖";
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerHTML =
+        "YAYYY! 😍<br><br><b>" + name + "</b><br>" + msg + "<br><br>💌 " + letter;
+    }
+
+    function showNo(){
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").innerHTML =
+        "Aww 😅 Please think again... I’m waiting ❤️";
+    }
+  </script>
+
+</body>
+</html>
